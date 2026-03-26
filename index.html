@@ -293,45 +293,35 @@
     
     .research-figure-wrap {
       display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
+      align-items: flex-start; 
+      gap: 25px;              
       margin: 20px 0;
-    }
-    
-    
-    
-    .float-img {
-      float: left;
-      max-width: 420px;        
-      margin: 0px 5px 5px 0;
-      height: auto;
-      width:100%
-    }
-    
-    .float-img-BS {
-      float: left;
-      max-width: 420px;        /* ??????,??????? */
-      margin: 0px 5px 5px 0;
-      height: auto;
-      width:100%;
+      flex-wrap: nowrap;      
     }
 
-    .float-img-runoff {
-      float: left;
-      max-width: 420px;        
-      margin: 0px 5px 5px 0;
-      height: auto;
-      width:100%
-    }
-    
-    .float-img-tree {
-      float: left; 
-      min-width: 200px;        /* ??????,??????? */
-      margin: 0px 5px 5px 0;
-      height: auto;
-      max-width: 20%;
+  .float-img, .float-img-BS, .float-img-runoff, .float-img-tree {
+      flex: 0 0 400px;          
+      max-width: 400px;
+      width: 400px;
+      height: 250px;          
+      object-fit: cover;     
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin: 0;              
     }
 
+
+  @media (max-width: 768px) {
+    .research-figure-wrap {
+      flex-direction: column; /* 手机端改为上下排列 */
+    }
+    .float-img, .float-img-BS, .float-img-runoff, .float-img-tree {
+      width: 100%;           /* 手机端占满宽度 */
+      max-width: 100%;
+      flex: none;
+      height: auto;          /* 手机端恢复自动高度 */
+    }
+  }
     
     .research-figure-wrap ul {
       flex:1;
