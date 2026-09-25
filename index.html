@@ -12,7 +12,7 @@
 
   <style>
     /* ============================================================
-       设计令牌
+       
        ============================================================ */
     :root {
       --bg:        #0b0e17;
@@ -43,7 +43,7 @@
     html { scroll-behavior: smooth; }
 
     /* ============================================================
-       顶部遮罩 —— 堵住 sticky 元素上方的缝隙
+      
        ============================================================ */
     html::before {
       content: '';
@@ -73,7 +73,7 @@
       -moz-osx-font-smoothing: grayscale;
     }
 
-    /* 背景光晕 */
+    /* */
     body::before {
       content: '';
       position: fixed;
@@ -96,7 +96,7 @@
     ::selection { background: rgba(240,194,127,.28); color: #fff; }
 
     /* ============================================================
-       侧边栏
+       
        ============================================================ */
     .sidebar {
       width: 292px;
@@ -119,7 +119,7 @@
     .sidebar::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 4px; }
     .sidebar::-webkit-scrollbar-track { background: transparent; }
 
-    /* 头像 */
+    /*  */
     .avatar-ring {
       position: relative;
       width: 146px;
@@ -187,7 +187,7 @@
       flex-shrink: 0;
     }
 
-    /* 联系方式 */
+    /*  */
     .contact-list {
       width: 100%;
       display: flex;
@@ -217,7 +217,7 @@
     .contact-link i { color: var(--gold); font-size: 12px; flex-shrink: 0; }
     .contact-link span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-    /* 社交链接 */
+    /*  */
     .social-list {
       width: 100%;
       display: flex;
@@ -251,14 +251,14 @@
     .social-link i.fa-orcid        { color: var(--orcid); }
 
     /* ============================================================
-       主内容区
+      
        ============================================================ */
     .main {
       flex: 1;
       min-width: 0;
     }
 
-    /* 导航栏外层容器 —— 矩形、不透明，覆盖圆角外的透明缝隙 */
+    /*  */
     .navbar-wrap {
       position: sticky;
       top: var(--nav-top);
@@ -299,7 +299,7 @@
       box-shadow: 0 4px 18px rgba(240,194,127,.22);
     }
 
-    /* 区块切换 */
+    /*  */
     .section { display: none; }
     .section.active {
       display: block;
@@ -310,7 +310,7 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* 通用卡片 */
+    /*  */
     .card {
       background: var(--card);
       border: 1px solid var(--border);
@@ -376,7 +376,7 @@
       max-width: 620px;
     }
 
-    /* 简介卡片 */
+    /*  */
     .intro-card {
       border-left: 3px solid var(--gold);
       border-radius: 6px 18px 18px 6px;
@@ -439,7 +439,7 @@
       letter-spacing: 1.5px;
     }
 
-    /* CV 按钮 */
+    /*  */
     .cv-btn {
       display: inline-flex;
       align-items: center;
@@ -470,7 +470,7 @@
       border-left: 1px solid rgba(240,194,127,.28);
     }
 
-    /* 区块标题 */
+    /*  */
     .block-title {
       display: flex;
       align-items: center;
@@ -487,7 +487,7 @@
     .block-title i.gold { color: var(--gold); }
     .block-title i.blue { color: var(--blue); }
 
-    /* 时间线 */
+    /*  */
     .timeline { position: relative; padding-left: 28px; }
     .timeline::before {
       content: '';
@@ -668,7 +668,7 @@
       background: linear-gradient(135deg, var(--gold), var(--pink));
     }
 
-    /* 相关文献 */
+    /*  */
     .pub-ref {
       margin-top: 20px;
       padding: 15px 18px;
@@ -773,7 +773,7 @@
     }
 
     /* ============================================================
-       响应式
+      
        ============================================================ */
     @media (max-width: 1180px) {
       .sidebar { width: 262px; }
@@ -838,7 +838,7 @@
 </head>
 <body>
 
-  <!-- ================= 侧边栏 ================= -->
+  <!-- =================  ================= -->
   <aside class="sidebar">
     <div class="avatar-ring">
       <img src="profile.jpg" alt="Minhui Li">
@@ -881,10 +881,10 @@
     </div>
   </aside>
 
-  <!-- ================= 主内容 ================= -->
+  <!-- =================  ================= -->
   <main class="main">
 
-    <!-- 导航（外层矩形容器堵住圆角漏缝） -->
+    <!-- -->
     <div class="navbar-wrap">
       <nav class="navbar">
         <div class="nav-link active" data-section="home">Home</div>
@@ -1269,7 +1269,7 @@
   </main>
 
   <script>
-    /* ---------- 导航切换 ---------- */
+    /* ----------  ---------- */
     const navLinks = document.querySelectorAll('.nav-link');
     const sections = document.querySelectorAll('.section');
 
