@@ -3,760 +3,1289 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Minhui Li - Website</title>
+  <title>Minhui Li · Stream Networks</title>
 
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  
+
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Inter', sans-serif;
+    /* ============================================================
+       设计令牌
+       ============================================================ */
+    :root {
+      --bg:        #0b0e17;
+      --bg-2:      #0f1620;
+      --card:      #141b26;
+      --card-hi:   #1a2332;
+      --border:    #1f2a3a;
+      --border-hi: #2a3a50;
+
+      --text:      #e6edf5;
+      --text-2:    #c8d8e8;
+      --text-3:    #b8c9dd;
+      --muted:     #8899b0;
+      --muted-2:   #5a6a80;
+
+      --gold:      #f0c27f;
+      --pink:      #fc5c7d;
+      --green:     #4cd9a0;
+      --blue:      #4a90d9;
+      --purple:    #8b5cf6;
+      --orcid:     #a6ce39;
+
+      --nav-top: 24px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    /* ============================================================
+       顶部遮罩 —— 堵住 sticky 元素上方的缝隙
+       ============================================================ */
+    html::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: var(--nav-top);
+      background: var(--bg);
+      z-index: 300;
+      pointer-events: none;
     }
 
     body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      font-size: 15px;
+      font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1;
+      text-rendering: optimizeLegibility;
+      background: var(--bg);
+      color: var(--text);
+      padding: var(--nav-top);
       display: flex;
+      gap: 24px;
+      align-items: flex-start;
       min-height: 100vh;
-      background-color: #f8f9fa;
-      color: #333;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
-    
-    /* Sidebar */
-    .sidebar {
-      width: 320px;
-      background: linear-gradient(160deg, #2c3e50, #34495e);
-      color: white;
-      padding: 40px 20px;
+
+    /* 背景光晕 */
+    body::before {
+      content: '';
       position: fixed;
-      height: 100vh;
+      top: -240px; left: -200px;
+      width: 760px; height: 760px;
+      background: radial-gradient(circle, rgba(74,144,217,.08), transparent 68%);
+      pointer-events: none;
+      z-index: -1;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      bottom: -260px; right: -200px;
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(240,194,127,.05), transparent 68%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    ::selection { background: rgba(240,194,127,.28); color: #fff; }
+
+    /* ============================================================
+       侧边栏
+       ============================================================ */
+    .sidebar {
+      width: 292px;
+      flex-shrink: 0;
+      position: sticky;
+      top: var(--nav-top);
+      max-height: calc(100vh - var(--nav-top) * 2);
+      overflow-y: auto;
+      background: linear-gradient(165deg, #141b26 0%, #0f1620 100%);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px 24px 26px;
       display: flex;
       flex-direction: column;
       align-items: center;
       text-align: center;
-      box-shadow: 4px 0 12px rgba(0, 0, 0, 0.15);
-      z-index: 1000;
+      z-index: 50;
     }
+    .sidebar::-webkit-scrollbar { width: 4px; }
+    .sidebar::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 4px; }
+    .sidebar::-webkit-scrollbar-track { background: transparent; }
 
-    .profile-img {
-      width: 200px;
-      height: 200px;
+    /* 头像 */
+    .avatar-ring {
+      position: relative;
+      width: 146px;
+      height: 146px;
+      margin-bottom: 24px;
+      flex-shrink: 0;
+    }
+    .avatar-ring::before {
+      content: '';
+      position: absolute;
+      inset: -9px;
+      border-radius: 50%;
+      background: conic-gradient(from 200deg, var(--gold), var(--pink), var(--blue), var(--gold));
+      opacity: .38;
+      filter: blur(15px);
+    }
+    .avatar-ring::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      padding: 2px;
+      background: linear-gradient(140deg, rgba(240,194,127,.85), rgba(74,144,217,.45), rgba(240,194,127,.15));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+    .avatar-ring img {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
       border-radius: 50%;
       object-fit: cover;
-      margin-bottom: 30px;
-      border: 4px solid white;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      display: block;
+      background: var(--card-hi);
     }
-    
 
-    .name {
+    .sidebar-name {
       font-size: 24px;
       font-weight: 700;
+      letter-spacing: -.6px;
+      line-height: 1.2;
+      background: linear-gradient(135deg, #ffffff 0%, #f0c27f 115%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
       margin-bottom: 8px;
     }
 
-    .email {
-      font-size: 15px;
-      line-height: 1.5;
-      margin-bottom: 25px;
-      opacity: 0.9;
+    .sidebar-role {
+      font-size: 12.5px;
+      line-height: 1.65;
+      color: var(--muted);
+      margin-bottom: 4px;
     }
+    .sidebar-role strong { color: var(--text-2); font-weight: 600; }
 
-    .social-links {
-      margin-top: 20px;
+    .sidebar-divider {
       width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border-hi), transparent);
+      margin: 20px 0;
+      flex-shrink: 0;
     }
 
-    .social-link {
-      display: block;
-      color: white;
-      text-decoration: none;
-      margin: 8px 0;
-      padding: 10px;
-      border-radius: 6px;
-      background: rgba(255, 255, 255, 0.05);
-      transition: all 0.3s;
-    }
-    .social-link:hover {
-      background: rgba(255, 255, 255, 0.15);
-    }
-
-    /* Main content area */
-    .main-content {
-      margin-left: 320px;
-      padding: 0 60px 20px 60px;
-      flex: 1;
+    /* 联系方式 */
+    .contact-list {
+      width: 100%;
       display: flex;
       flex-direction: column;
+      gap: 7px;
+    }
+    .contact-link {
+      display: flex;
       align-items: center;
-      background-color: #fff;
+      gap: 10px;
+      padding: 9px 13px;
+      border-radius: 10px;
+      background: rgba(255,255,255,.02);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 12.5px;
+      text-decoration: none;
+      transition: all .25s ease;
+      text-align: left;
+      overflow: hidden;
+    }
+    .contact-link:hover {
+      border-color: var(--border-hi);
+      color: var(--text-2);
+      background: rgba(255,255,255,.045);
+    }
+    .contact-link i { color: var(--gold); font-size: 12px; flex-shrink: 0; }
+    .contact-link span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    /* 社交链接 */
+    .social-list {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+    .social-link {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: rgba(255,255,255,.02);
+      border: 1px solid var(--border);
+      color: var(--text-2);
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all .25s ease;
+    }
+    .social-link:hover {
+      border-color: rgba(240,194,127,.38);
+      background: rgba(240,194,127,.06);
+      color: var(--gold);
+      transform: translateX(3px);
+    }
+    .social-link i { width: 16px; text-align: center; font-size: 14px; flex-shrink: 0; }
+    .social-link i.fa-google       { color: var(--gold); }
+    .social-link i.fa-researchgate { color: var(--green); }
+    .social-link i.fa-linkedin     { color: var(--blue); }
+    .social-link i.fa-orcid        { color: var(--orcid); }
+
+    /* ============================================================
+       主内容区
+       ============================================================ */
+    .main {
+      flex: 1;
+      min-width: 0;
     }
 
-    /* Navigation */
+    /* 导航栏外层容器 —— 矩形、不透明，覆盖圆角外的透明缝隙 */
+    .navbar-wrap {
+      position: sticky;
+      top: var(--nav-top);
+      z-index: 200;
+      margin-bottom: 24px;
+      background: var(--bg);
+    }
+
     .navbar {
       display: flex;
-      background-color: #fff;
-      width: 100%;
-      max-width: 1200px;
-      justify-content: center;
-      padding: 0;
-      position: sticky;
-      top: 0;
-      z-index: 900;
+      gap: 6px;
+      padding: 7px;
+      background: #141b26;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 10px 30px -8px rgba(0, 0, 0, .55);
     }
-    
-    
+
     .nav-link {
-      padding: 15px 25px;
+      flex: 1;
+      text-align: center;
+      padding: 10px 16px;
+      border-radius: 11px;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--muted);
       cursor: pointer;
-      margin: 0;
-      border-bottom: 3px solid transparent;
-      transition: all 0.3s;
-      color: #2c3e50;
+      transition: all .25s ease;
+      user-select: none;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+    .nav-link:hover { color: var(--text-2); background: rgba(255,255,255,.035); }
+    .nav-link.active {
+      background: linear-gradient(135deg, #f0c27f, #fc5c7d);
+      color: #0b0e17;
       font-weight: 600;
-      font-size: 16px;
+      box-shadow: 0 4px 18px rgba(240,194,127,.22);
     }
 
-    .nav-link:hover, .nav-link.active {
-      background-color: #2c3e50;
-      color: white;
-      border-bottom: 3px solid white;
-    }
-
-    /* Content */
-    .content {
-      width: 100%;
-      max-width: 1200px;
-      padding: 30px;
-      background-color: #fff;
-      line-height: 1.7;
-      text-align: justify; 
-      font-size: 16px; 
-    }
-    
-    .background-banner {
-      width: 100%;
-      height: 400px;
-      background-image: url('background.jpg');
-      background-size: 100% auto;      
-      background-position: center; 
-      background-repeat: no-repeat;
-      border-radius: 8px;       
-      margin-bottom: 20px;
-      
-      position: relative; 
-      display: flex; 
-      justify-content: center;      
-      align-items: center;  
-    }
-    
-    .banner-text {
-      position: absolute;
-      top: 0;
-      left: 0;
-      padding: 20px;
-      color: white;          
-      font-size: 32px;
-      font-weight: normal;
-      font-family: 'Lobster', cursive;
-     
-      text-shadow: 
-        2px 2px 4px #FF4500,  /* ????? */
-        4px 4px 6px rgba(255,69,0,0.5); /* ????????????? */
-    }
-
-    .section {
-      display: none;
-      margin-bottom: 40px;
-    }
-
+    /* 区块切换 */
+    .section { display: none; }
     .section.active {
       display: block;
+      animation: fadeUp .45s cubic-bezier(.22,.61,.36,1);
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
-    .top-images {
+    /* 通用卡片 */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 26px 28px;
+    }
+
+    /* ============================================================
+       Home — Hero
+       ============================================================ */
+    .hero {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      min-height: 420px;
       display: flex;
-      justify-content: center;
-      gap: 60px;
-      margin-bottom: 0;
-      margin-up: 20px;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 48px 44px;
+      border: 1px solid var(--border);
+      background: linear-gradient(140deg, #1a2332, #0f1620);
+      margin-bottom: 22px;
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('background.jpg');
+      background-size: cover;
+      background-position: center;
+      opacity: .55;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg,
+        rgba(11,14,23,.08) 0%,
+        rgba(11,14,23,.62) 48%,
+        rgba(11,14,23,.97) 100%);
+    }
+    .hero-inner { position: relative; z-index: 2; }
+
+    .hero-title {
+      font-size: 46px;
+      font-weight: 700;
+      line-height: 1.12;
+      letter-spacing: -1.6px;
+      color: #fff;
+      margin-bottom: 18px;
+    }
+    .hero-title em {
+      font-style: normal;
+      background: linear-gradient(120deg, #f0c27f, #fc5c7d);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
-    .top-images figure {
-      margin: 0;
-      text-align: center;
+    .hero-desc {
+      font-size: 15px;
+      line-height: 1.75;
+      color: rgba(230,237,245,.74);
+      max-width: 620px;
     }
 
-    .top-images img {
-      height: 260px;
-      width: auto;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-      transition: transform 0.3s;
+    /* 简介卡片 */
+    .intro-card {
+      border-left: 3px solid var(--gold);
+      border-radius: 6px 18px 18px 6px;
+      font-size: 15px;
+      line-height: 1.85;
+      color: var(--text-3);
     }
+    .intro-card strong { color: var(--gold); font-weight: 600; }
 
-    .top-images figcaption {
-      margin-top: 5px;
-      font-size: 14px;
-      color: #777;
+    /* ============================================================
+       About
+       ============================================================ */
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
     }
-    
-    .fun-text {
-      text-align: right;
-      font-family: 'Lobster', cursive;
-      font-size: 16px;
-      font-weight: 600;
-      margin-top: 0;
-      color: #228B22;  /* ????????? */
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.2); /* ???? */
+    .photo-item {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      aspect-ratio: 4 / 3;
+      border: 1px solid var(--border);
+      background: var(--card);
+      cursor: default;
     }
-
-    .education-item, .work-item {
-      margin-bottom: 10px;
-      padding: 5px; 
-      background-color: rgba(245, 245, 245, 0.8);
-      border-radius: 10px; 
-    }
-
-    .date {
-      font-weight: bold;
-      color: #2c3e50;
-      margin-bottom: 5px;
-    }
-
-    .degree, .position {
-      margin: 5px 0;
-      font-weight: 600;
-    }
-
-    .institution, .company {
-      font-style: italic;
-      color: #555;
-    }
-
-    .advisors {
-      margin-top: 0;
-      font-size: 14px;
-      color: #666;
-    }
-    
-    .cv-link {
-      display: inline-block;
-      margin-top:0;
-      margin-bottom: 15px;    
-      padding: 6px 24px;
-      background-color: #4a5a6a;
-      color: white;
-      text-decoration: none;
-      border-radius: 6px;
-      transition: background 0.3s, transform 0.3s;
-      font-weight: 600;
-    }
-    
-    .cv-link:hover {
-      background-color: #1a252f;
-      transform: translateY(-2px);
-    }
-    
-    .research-topic {
-      margin-bottom: 40px;
-    }
-    
-    .research-topic ol {
-      margin-left: 20px;
-      margin-top: 15px;
-    }
-    
-    .research-topic li {
-      margin-bottom: 10px;
-    }
-    
-    .research-title {
-      font-size: 22px;
-      color: #2f4f4f; 
-      margin: 30px 0 20px;
-      padding-bottom: 10px;
-      border-bottom: 2px solid #eee;
-    }
-    
-    .research-title i {
-      color: #6b8fa3;   /* ???? */
-      margin-right: 8px;    /* ??????? */
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.15);
-    }
-    
-    .research-figure-wrap {
-      display: flex;
-      align-items: flex-start; 
-      gap: 20px;              
-      margin: 20px 0;
-    }
-
-  .float-img, .float-img-BS, .float-img-runoff {
-      flex: 0 0 350px;          
-      max-width: 350px;
+    .photo-item img {
       width: 100%;
-      height: auto;         
-      object-fit: contain;     
-      border-radius: 6px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      margin: 0;              
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .6s cubic-bezier(.22,.61,.36,1);
     }
- .float-img-tree {
-      flex: 0 0 250px;          
-      max-width: 250px;
-      width: 30%;
-      height: auto;         
-      object-fit: contain;     
-      border-radius: 6px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      margin: 0;              
+    .photo-item:hover img { transform: scale(1.07); }
+    .photo-item figcaption {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      padding: 28px 14px 12px;
+      background: linear-gradient(transparent, rgba(11,14,23,.94));
+      font-size: 11.5px;
+      color: var(--text-2);
+      letter-spacing: .2px;
+    }
+    .photo-item figcaption i { color: var(--gold); margin-right: 5px; font-size: 10px; }
+
+    .fun-text {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--muted);
+      text-align: right;
+      margin-bottom: 24px;
+    }
+    .fun-text span {
+      font-weight: 700;
+      background: linear-gradient(120deg, var(--gold), var(--pink));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 1.5px;
     }
 
-  @media (max-width: 768px) {
-    .research-figure-wrap {
-      flex-direction: column; 
-    }
-    .float-img, .float-img-BS, .float-img-runoff, .float-img-tree {
-      width: 100%;           /* 手机端占满宽度 */
-      max-width: 100%;
-      flex: none;
-      height: auto;         
-    }
-  }
-    
-    .research-figure-wrap ul {
-      flex:1;
-      flex-wrap: wrap;  
-      min-width: 100px;
-      padding-left: 0;
-    }
-    
-    .research-figure-wrap li {
-      margin-bottom: 12px;
-    }
-    
-    .publication-caption {
-      margin: 5px 0;
-      padding: 5px;
-      background-color: #fff;
-    }
-    
-    .publications {
-      margin: 5px 0;
-    }
-    
-    .publications ol {
-      margin-left: 5px;
-    }
-    
-    .publications li {
-      margin-bottom: 5px;
-      padding: 5px;
-      background-color: #fff;
-    }
-    
-    .publication-status {
-      color: #c0392b;
+    /* CV 按钮 */
+    .cv-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 11px;
+      padding: 12px 22px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(240,194,127,.12), rgba(252,92,125,.08));
+      border: 1px solid rgba(240,194,127,.35);
+      color: var(--gold);
+      font-size: 13.5px;
       font-weight: 600;
-      margin-left: 10px;
+      text-decoration: none;
+      transition: all .28s ease;
+      margin-bottom: 8px;
     }
-    
-    .progress-title {
-      margin: 0px 0 10px;
-      color: #2c3e50;
+    .cv-btn:hover {
+      background: linear-gradient(135deg, rgba(240,194,127,.22), rgba(252,92,125,.14));
+      border-color: rgba(240,194,127,.6);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(240,194,127,.15);
     }
-
-    /* Responsive */
-    @media (max-width: 1100px) {
-      .content {
-        padding: 25px;
-      }
-    }
-
-    @media (max-width: 992px) {
-      .sidebar {
-        width: 220px;
-      }
-      
-      .main-content {
-        margin-left: 220px;
-      }
-      
-      .profile-img {
-        width: 140px;
-        height: 140px;
-      }
-      
-      .nav-link {
-        padding: 12px 20px;
-        font-size: 15px;
-      }
+    .cv-btn i { font-size: 14px; }
+    .cv-meta {
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--muted);
+      padding-left: 11px;
+      border-left: 1px solid rgba(240,194,127,.28);
     }
 
-    @media (max-width: 768px) {
+    /* 区块标题 */
+    .block-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -.3px;
+      margin: 34px 0 20px;
+      padding-bottom: 13px;
+      border-bottom: 1px solid var(--border);
+    }
+    .block-title i { font-size: 14px; }
+    .block-title i.gold { color: var(--gold); }
+    .block-title i.blue { color: var(--blue); }
+
+    /* 时间线 */
+    .timeline { position: relative; padding-left: 28px; }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 5px; top: 8px; bottom: 8px;
+      width: 2px;
+      background: linear-gradient(180deg, rgba(240,194,127,.55), rgba(74,144,217,.35), transparent);
+    }
+    .tl-item { position: relative; margin-bottom: 24px; }
+    .tl-item:last-child { margin-bottom: 0; }
+    .tl-item::before {
+      content: '';
+      position: absolute;
+      left: -28px;
+      top: 5px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--bg);
+      border: 2px solid var(--gold);
+      box-shadow: 0 0 0 4px rgba(240,194,127,.08);
+    }
+    .tl-item.blue::before {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 4px rgba(74,144,217,.08);
+    }
+    .tl-date {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .7px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 7px;
+      font-variant-numeric: tabular-nums;
+    }
+    .tl-item.blue .tl-date { color: var(--blue); }
+    .tl-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.5;
+      margin-bottom: 3px;
+    }
+    .tl-org {
+      font-size: 13.5px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .tl-note {
+      font-size: 12.5px;
+      color: var(--muted-2);
+      margin-top: 5px;
+      font-style: italic;
+    }
+
+    /* ============================================================
+       Research
+       ============================================================ */
+    .research-intro {
+      font-size: 15px;
+      line-height: 1.85;
+      color: var(--text-3);
+      margin-bottom: 22px;
+    }
+    .interest-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+    .interest-list li { display: flex; gap: 14px; align-items: flex-start; }
+    .interest-idx {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--gold);
+      padding-top: 3px;
+      flex-shrink: 0;
+      letter-spacing: .5px;
+      font-variant-numeric: tabular-nums;
+    }
+    .interest-list strong { color: var(--text); font-weight: 600; }
+    .interest-list span { color: var(--muted); }
+
+    .research-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 26px 28px;
+      margin-bottom: 18px;
+      transition: border-color .3s ease;
+    }
+    .research-card:hover { border-color: var(--border-hi); }
+
+    .research-head {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .research-num {
+      font-size: 11.5px;
+      font-weight: 600;
+      letter-spacing: .5px;
+      color: var(--gold);
+      padding: 3px 9px;
+      border-radius: 6px;
+      background: rgba(240,194,127,.08);
+      border: 1px solid rgba(240,194,127,.18);
+      flex-shrink: 0;
+      font-variant-numeric: tabular-nums;
+    }
+    .research-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -.35px;
+      line-height: 1.4;
+    }
+    .research-status {
+      margin-left: auto;
+      font-size: 10px;
+      letter-spacing: .8px;
+      text-transform: uppercase;
+      padding: 4px 11px;
+      border-radius: 20px;
+      background: rgba(240,194,127,.08);
+      border: 1px solid rgba(240,194,127,.2);
+      color: var(--gold);
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .research-figure-wrap {
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+    }
+    .research-figure-wrap img {
+      flex: 0 0 320px;
+      width: 320px;
+      height: auto;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      object-fit: contain;
+      background: var(--bg-2);
+      display: block;
+    }
+    .research-figure-wrap img.narrow { flex: 0 0 220px; width: 220px; }
+
+    .research-points {
+      flex: 1;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 13px;
+      min-width: 0;
+    }
+    .research-points li {
+      position: relative;
+      padding-left: 20px;
+      font-size: 14.5px;
+      line-height: 1.72;
+      color: var(--text-3);
+    }
+    .research-points li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 9px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), var(--pink));
+    }
+
+    /* 相关文献 */
+    .pub-ref {
+      margin-top: 20px;
+      padding: 15px 18px;
+      background: var(--bg-2);
+      border-radius: 11px;
+      border-left: 3px solid var(--blue);
+      font-size: 13px;
+      line-height: 1.75;
+      color: var(--muted);
+    }
+    .pub-ref strong {
+      display: block;
+      font-size: 10.5px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--blue);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .pub-ref i { color: var(--text-2); }
+    .pub-ref a, .doi {
+      color: var(--gold);
+      text-decoration: none;
+      font-weight: 500;
+      white-space: nowrap;
+      transition: opacity .2s;
+    }
+    .pub-ref a:hover, .doi:hover { opacity: .75; text-decoration: underline; }
+
+    /* ============================================================
+       Publications
+       ============================================================ */
+    .pub-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .pub-item {
+      display: flex;
+      gap: 18px;
+      padding: 18px 22px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      transition: all .25s ease;
+    }
+    .pub-item:hover {
+      border-color: rgba(240,194,127,.32);
+      background: var(--card-hi);
+      transform: translateX(3px);
+    }
+    .pub-year {
+      flex: 0 0 46px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gold);
+      padding-top: 3px;
+      letter-spacing: .2px;
+      font-variant-numeric: tabular-nums;
+    }
+    .pub-body { flex: 1; min-width: 0; }
+
+    .pub-title {
+      font-size: 15.5px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.5;
+      margin-bottom: 7px;
+      letter-spacing: -.2px;
+    }
+    .pub-authors {
+      font-size: 12.5px;
+      color: var(--muted);
+      line-height: 1.65;
+      margin-bottom: 6px;
+    }
+    .pub-authors strong { color: var(--gold); font-weight: 600; }
+    .pub-journal {
+      font-size: 12.5px;
+      color: var(--muted-2);
+      line-height: 1.6;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+    .pub-journal i { color: var(--text-2); font-style: italic; }
+    .pub-journal .doi {
+      font-size: 11.5px;
+      padding: 2px 9px;
+      border-radius: 6px;
+      background: rgba(240,194,127,.08);
+      border: 1px solid rgba(240,194,127,.18);
+      transition: all .2s;
+      font-variant-numeric: tabular-nums;
+    }
+    .pub-journal .doi:hover {
+      background: rgba(240,194,127,.16);
+      text-decoration: none;
+      opacity: 1;
+    }
+
+    /* ============================================================
+       响应式
+       ============================================================ */
+    @media (max-width: 1180px) {
+      .sidebar { width: 262px; }
+      .hero-title { font-size: 40px; }
+    }
+
+    @media (max-width: 1000px) {
+      .research-figure-wrap img { flex: 0 0 260px; width: 260px; }
+      .research-figure-wrap img.narrow { flex: 0 0 190px; width: 190px; }
+    }
+
+    @media (max-width: 900px) {
+      :root { --nav-top: 16px; }
       body {
         flex-direction: column;
+        gap: 16px;
       }
-      
       .sidebar {
         width: 100%;
-        position: relative;
-        height: auto;
-        padding: 20px;
+        position: static;
+        max-height: none;
+        padding: 28px 22px 24px;
       }
-      
-      .main-content {
-        margin-left: 0;
+      .photo-grid { grid-template-columns: 1fr 1fr; }
+      .research-figure-wrap { flex-direction: column; }
+      .research-figure-wrap img,
+      .research-figure-wrap img.narrow {
+        flex: none;
         width: 100%;
-      }
-      
-      .profile-img {
-        width: 120px;
-        height: 120px;
-        margin-bottom: 15px;
-      }
-      
-      .navbar {
-        flex-wrap: wrap;
-      }
-      
-      .nav-link {
-        padding: 10px 15px;
-        font-size: 14px;
-        flex: 1;
-        text-align: center;
-      }
-      
-      .banner-text {
-        font-size: 2rem;
-      }
-      
-      .research-figure-wrap {
-        flex-direction: column;
-      }
-      
-      .float-img, .float-img-BS, .float-img-tree {
-        width: 100%;
-      }
-      
-      .top-images {
-        flex-direction: column;
-        align-items: center;
-      }
-      
-      .top-images figure {
         max-width: 100%;
-        margin-bottom: 30px;
       }
-      
-      .image-container {
-        height: 220px;
-      }
+      .hero { padding: 34px 26px; min-height: 360px; }
+      .hero-title { font-size: 34px; letter-spacing: -1.2px; }
     }
 
-    @media (max-width: 576px) {
-      .top-images figure {
-        min-width: 100%;
-      }
-      
-      .name {
-        font-size: 20px;
-      }
-      
-      .email {
-        font-size: 14px;
-      }
-      
-      .nav-link {
-        padding: 8px 12px;
-        font-size: 13px;
-      }
-      
-      .banner-text {
-        font-size: 1.8rem;
-      }
-      
-      .content {
-        padding: 20px 15px;
-      }
-      
-      .image-container {
-        height: 200px;
-      }
+    @media (max-width: 620px) {
+      :root { --nav-top: 10px; }
+      .hero { min-height: 320px; padding: 28px 20px; }
+      .hero-title { font-size: 28px; letter-spacing: -1px; }
+      .hero-desc { font-size: 13.5px; }
+
+      .nav-link { padding: 9px 6px; font-size: 12px; }
+      .navbar { gap: 4px; padding: 5px; }
+
+      .card, .research-card { padding: 20px 18px; }
+      .intro-card { font-size: 14px; }
+      .photo-grid { grid-template-columns: 1fr; }
+
+      .pub-item { flex-direction: column; gap: 8px; padding: 16px 18px; }
+      .pub-year { padding-top: 0; }
+
+      .research-head { flex-wrap: wrap; gap: 10px; }
+      .research-status { margin-left: 0; }
+      .research-title { font-size: 16px; }
+
+      .cv-btn { flex-wrap: wrap; gap: 8px; padding: 11px 18px; font-size: 13px; }
+      .cv-meta { padding-left: 0; border-left: none; width: 100%; }
+
+      .fun-text { text-align: left; font-size: 15px; }
     }
   </style>
 </head>
 <body>
-  <!-- Sidebar -->
-  <div class="sidebar">
-    <img src="profile.jpg" alt="Minhui Li" class="profile-img">
-    <div>
-      <div class="name">Minhui Li</div>
-      <div class="email">
-        <i class="fa-solid fa-envelope" aria-hidden="true" style="margin-right:6px;"></i>minhui0603@gmail.com<br>
-        <i class="fa-solid fa-envelope" aria-hidden="true" style="margin-right:6px;"></i>minhui.li@yale.edu
-      </div>
-      <div class="social-links">
-        <a href="https://scholar.google.com/citations?user=qJLu9TAAAAAJ&hl=en" class="social-link" target="_blank">
-            <i class="fa-brands fa-google"></i> Google Scholar
-        </a>
-        <a href="https://www.researchgate.net/profile/Minhui-Li-4" class="social-link" target="_blank">
-            <i class="fa-brands fa-researchgate"></i> ResearchGate
-        </a>
-        <a href="http://linkedin.com/in/minhui-li-7ba2bb265" class="social-link" target="_blank">
-            <i class="fa-brands fa-linkedin"></i> LinkedIn
-        </a>
-      </div>
+
+  <!-- ================= 侧边栏 ================= -->
+  <aside class="sidebar">
+    <div class="avatar-ring">
+      <img src="profile.jpg" alt="Minhui Li">
     </div>
-  </div>
 
-  <!-- Main content -->
-  <div class="main-content">
-    <!-- Navigation -->
-    <div class="navbar">
-      <div class="nav-link active" data-section="home">Home</div>
-      <div class="nav-link" data-section="about">About me</div>
-      <div class="nav-link" data-section="research">Research</div>
-      <div class="nav-link" data-section="publications">Publications</div>
+    <h1 class="sidebar-name">Minhui Li</h1>
+    <div class="sidebar-role">
+      Postdoctoral Associate<br>
+      <strong>Yale School of the Environment</strong>
     </div>
-    
-    <!-- Content -->
-    <div class="content">
-      <!-- Home Section -->
-      <div id="home" class="section active">
-        <div class="background-banner">
-          <div class="banner-text">Welcome to Minhui's website</div>
-        </div>
 
-        <p>Hi, I'm Minhui, a postdoctoral associate at the Yale School of the Environment. I study how rivers interact with landscapes and climate, focusing on stream network geometry, topology, and hydrological connectivity. My research combines extensive GIS analyses, data-driven methods, physics-based theory and large-sample datasets to quantify the interrelationships between climate, landscape, river network structures and catchment responses. I work across regional, continental, and global scales, aiming to reveal broad spatial patterns and the underlying processes that shape them.</p>
-      </div>
+    <div class="sidebar-divider"></div>
 
-      <!-- About Section -->
-      <div id="about" class="section">
-        <div class="top-images">
-          <figure>
-            <div class="image-container">
-              <img src="1.jpg" alt="Tibetan Plateau">
-            </div>
-            <figcaption>Tibetan Plateau, China</figcaption>
-          </figure>
-          
-          <figure>
-            <div class="image-container">
-              <img src="2.jpg" alt="Aletsch Glacier">
-            </div>
-            <figcaption>Aletsch Glacier, Switzerland</figcaption>
-          </figure>
-          
-          <figure>
-            <div class="image-container">
-              <img src="3.jpg" alt="Saxer lücke">
-            </div>
-            <figcaption>Saxer Lücke, Switzerland</figcaption>
-          </figure>
-        </div>
-        
-        <p class="fun-text">Have fun exploring NATURE!</p>
-        
-        <a href="cv_mh.pdf" class="cv-link">
-          <i class="fas fa-download" style="margin-right: 8px;"></i>
-          CV (Last updated: March, 2026)
-        </a>
-        
-        <h3><i class="fa-solid fa-graduation-cap" style="margin-right:6px; color:#87CEFA;"></i>Education:</h3>
-        <div class="education-item">
-          <div class="date">Sep. 2018 - Jun. 2024</div>
-          <div class="degree">PhD, Department of Hydraulic Engineering, Tsinghua University, China</div>
-          <div class="advisors">Advisors: Xudong Fu, Baosheng Wu</div>
-        </div>
+    <div class="contact-list">
+      <a class="contact-link" href="mailto:minhui0603@gmail.com">
+        <i class="fa-solid fa-envelope"></i>
+        <span>minhui0603@gmail.com</span>
+      </a>
+      <a class="contact-link" href="mailto:minhui.li@yale.edu">
+        <i class="fa-solid fa-envelope"></i>
+        <span>minhui.li@yale.edu</span>
+      </a>
+    </div>
 
-        <div class="education-item">
-          <div class="date">Sep. 2014 - Jun. 2018</div>
-          <div class="degree">BS, Dayu College, Hohai University, China</div>
-        </div>
+    <div class="sidebar-divider"></div>
 
-        <div class="education-item">
-          <div class="date">Dec. 2021 - Nov. 2023</div>
-          <div class="degree">Visiting PhD student, Department of Environmental Systems Sciences, ETH Zurich, Switzerland</div>
-          <div class="advisors">Advisors: James Kirchner, Hansjörg Seybold</div>
-        </div>
+    <div class="social-list">
+      <a class="social-link" href="https://scholar.google.com/citations?user=qJLu9TAAAAAJ&hl=en" target="_blank" rel="noopener">
+        <i class="fa-brands fa-google"></i> Google Scholar
+      </a>
+      <a class="social-link" href="https://www.researchgate.net/profile/Minhui-Li-4" target="_blank" rel="noopener">
+        <i class="fa-brands fa-researchgate"></i> ResearchGate
+      </a>
+      <a class="social-link" href="http://linkedin.com/in/minhui-li-7ba2bb265" target="_blank" rel="noopener">
+        <i class="fa-brands fa-linkedin"></i> LinkedIn
+      </a>
+      <a class="social-link" href="https://orcid.org/0000-0002-5974-4632" target="_blank" rel="noopener">
+        <i class="fa-brands fa-orcid"></i> ORCID
+      </a>
+    </div>
+  </aside>
 
-        <h3><i class="fa-solid fa-building" style="margin-right:6px; color:#1E3A8A;"></i>Professional Experiences:</h3>
+  <!-- ================= 主内容 ================= -->
+  <main class="main">
 
-        <div class="work-item">
-          <div class="date">Jan. 2025 - present</div>
-          <div class="position">Postdocoral associate, School of the Environment, Yale University, United States</div>
-          <div class="advisors">Advisor: Peter Raymond</div>
-        </div>
+    <!-- 导航（外层矩形容器堵住圆角漏缝） -->
+    <div class="navbar-wrap">
+      <nav class="navbar">
+        <div class="nav-link active" data-section="home">Home</div>
+        <div class="nav-link" data-section="about">About me</div>
+        <div class="nav-link" data-section="research">Research</div>
+        <div class="nav-link" data-section="publications">Publications</div>
+      </nav>
+    </div>
 
-        <div class="work-item">
-          <div class="date">Aug. 2024 - Dec. 2024</div>
-          <div class="position">Postdoc, Department of Environmental Systems Sciences, ETH Zurich, Switzerland</div>
-          <div class="advisors">Advisor: James Kirchner</div>
-        </div>
-
-        <div class="work-item">
-          <div class="date">Dec. 2023 - Jul. 2024</div>
-          <div class="position">Scientific assistant, Department of Environmental Systems Sciences, ETH Zurich, Switzerland</div>
-          <div class="advisors">Advisor: James Kirchner</div>
+    <!-- ---------- Home ---------- -->
+    <section id="home" class="section active">
+      <div class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-inner">
+          <h1 class="hero-title">Stream networks, <em>Landscapes &amp; Climate</em></h1>
+          <p class="hero-desc">
+            Quantifying how climate and topography shape stream networks and catchment
+            response — from regional to continental to global scales.
+          </p>
         </div>
       </div>
 
-      <!-- Research Section -->
-      <div id="research" class="section">
-        <div class="research-topic">
-          My research mainly focuses on geomorphology, hydrology, and biogeochemistry, with three main areas of interest:
-          <ol>
-            <li><strong>Hydrological controls on stream network expansion and contraction</strong>, and their implications for riverine carbon dynamics.</li>
-            <li><strong>Continental- to global-scale morphological analysis</strong> of stream networks and watersheds.</li>
-            <li><strong>Dynamic connectivity between landscapes and stream networks</strong>, and its influence on hydrologic responses across different climates.</li>
-          </ol>
+      <div class="card intro-card">
+        <p>
+          Hi, I'm <strong>Minhui</strong>, a postdoctoral associate at the Yale School of the
+          Environment. I study how rivers interact with landscapes and climate, focusing on
+          stream network geometry, topology, and hydrological connectivity. My research combines
+          extensive GIS analyses, data-driven methods, physics-based theory and large-sample
+          datasets to quantify the interrelationships between climate, landscape, river network
+          structures and catchment responses. I work across regional, continental, and global
+          scales, aiming to reveal broad spatial patterns and the underlying processes that
+          shape them.
+        </p>
+      </div>
+    </section>
+
+    <!-- ---------- About ---------- -->
+    <section id="about" class="section">
+      <div class="photo-grid">
+        <figure class="photo-item">
+          <img src="1.jpg" alt="Tibetan Plateau">
+          <figcaption><i class="fa-solid fa-location-dot"></i>Tibetan Plateau, China</figcaption>
+        </figure>
+        <figure class="photo-item">
+          <img src="2.jpg" alt="Aletsch Glacier">
+          <figcaption><i class="fa-solid fa-location-dot"></i>Aletsch Glacier, Switzerland</figcaption>
+        </figure>
+        <figure class="photo-item">
+          <img src="3.jpg" alt="Saxer Lücke">
+          <figcaption><i class="fa-solid fa-location-dot"></i>Saxer Lücke, Switzerland</figcaption>
+        </figure>
+      </div>
+
+      <p class="fun-text">Have fun exploring <span>NATURE</span>!</p>
+
+      <a href="cv_mh.pdf" class="cv-btn">
+        <i class="fas fa-file-arrow-down"></i>
+        Curriculum Vitae
+        <span class="cv-meta">Last updated: March, 2026</span>
+      </a>
+
+      <h3 class="block-title">
+        <i class="fa-solid fa-graduation-cap gold"></i> Education
+      </h3>
+
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-date">Sep 2018 – Jun 2024</div>
+          <div class="tl-title">PhD, Department of Hydraulic Engineering</div>
+          <div class="tl-org">Tsinghua University, China</div>
+          <div class="tl-note">Advisors: Xudong Fu, Baosheng Wu</div>
         </div>
 
-        <h2 class="research-title"><i class="fa-solid fa-book-open"></i> CLIMATE AND LANDSCAPE CONTROLS ON RAINFALL-RUNOFF RESPONSE</h2>
-        
+        <div class="tl-item">
+          <div class="tl-date">Sep 2014 – Jun 2018</div>
+          <div class="tl-title">BS, Dayu College</div>
+          <div class="tl-org">Hohai University, China</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">Dec 2021 – Nov 2023</div>
+          <div class="tl-title">Visiting PhD Student, Department of Environmental Systems Science</div>
+          <div class="tl-org">ETH Zurich, Switzerland</div>
+          <div class="tl-note">Advisors: James Kirchner, Hansjörg Seybold</div>
+        </div>
+      </div>
+
+      <h3 class="block-title">
+        <i class="fa-solid fa-building blue"></i> Professional Experiences
+      </h3>
+
+      <div class="timeline">
+        <div class="tl-item blue">
+          <div class="tl-date">Jan 2025 – Present</div>
+          <div class="tl-title">Postdoctoral Associate, School of the Environment</div>
+          <div class="tl-org">Yale University, United States</div>
+          <div class="tl-note">Advisor: Peter Raymond</div>
+        </div>
+
+        <div class="tl-item blue">
+          <div class="tl-date">Aug 2024 – Dec 2024</div>
+          <div class="tl-title">Postdoc, Department of Environmental Systems Science</div>
+          <div class="tl-org">ETH Zurich, Switzerland</div>
+          <div class="tl-note">Advisor: James Kirchner</div>
+        </div>
+
+        <div class="tl-item blue">
+          <div class="tl-date">Dec 2023 – Jul 2024</div>
+          <div class="tl-title">Scientific Assistant, Department of Environmental Systems Science</div>
+          <div class="tl-org">ETH Zurich, Switzerland</div>
+          <div class="tl-note">Advisor: James Kirchner</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- Research ---------- -->
+    <section id="research" class="section">
+
+      <div class="card research-intro">
+        My research mainly focuses on geomorphology, hydrology, and biogeochemistry,
+        with three main areas of interest:
+        <ol class="interest-list">
+          <li>
+            <span class="interest-idx">01</span>
+            <div><strong>Hydrological controls on stream network expansion and contraction</strong>,
+              <span>and their implications for riverine carbon dynamics.</span></div>
+          </li>
+          <li>
+            <span class="interest-idx">02</span>
+            <div><strong>Continental- to global-scale morphological analysis</strong>
+              <span>of stream networks and watersheds.</span></div>
+          </li>
+          <li>
+            <span class="interest-idx">03</span>
+            <div><strong>Dynamic connectivity between landscapes and stream networks</strong>,
+              <span>and its influence on hydrologic responses across different climates.</span></div>
+          </li>
+        </ol>
+      </div>
+
+      <!-- 01 -->
+      <article class="research-card">
+        <div class="research-head">
+          <span class="research-num">01</span>
+          <h2 class="research-title">Climate and Landscape Controls on Rainfall–Runoff Response</h2>
+        </div>
         <div class="research-figure-wrap">
-          <img src="peakrunoff-US.jpg" alt="peak-runoff" class="float-img-runoff">
-          <ul>
-            <li>More than three-fourths of the studied catchments (516 CAMELS-US  catchments) exhibit streamflow responses that are too rapid to be captured by conventional analyses of daily rainfall–runoff data. </li>
+          <img src="peakrunoff-US.jpg" alt="Peak runoff response across the continental US">
+          <ul class="research-points">
+            <li>More than three-fourths of the studied catchments (516 CAMELS-US catchments) exhibit streamflow responses that are too rapid to be captured by conventional analyses of daily rainfall–runoff data.</li>
             <li>Our results reveal a decoupling of the main controls on peak height per unit rainfall and peak lag.</li>
             <li>Our results highlight the distinct yet interrelated roles of climate, topography, and subsurface properties in shaping rainfall–runoff response.</li>
           </ul>
         </div>
-        
-        <div class="publication-caption">
-          <strong>Related publication:</strong><br>
-          Li, M., Seybold, H., Beria, H., Floriancic, M., Fu, X., Raymond, P., & Kirchner, J.W. (2026). Controls on the magnitude and timing of runoff response to rainfall across the continental US. <i>Environmental Research Letters</i>, 21, 054017. 
-          <a href="https://doi.org/10.1088/1748-9326/ae49a2" target="_blank">DOI</a>
+        <div class="pub-ref">
+          <strong>Related publication</strong>
+          Li, M., Seybold, H., Beria, H., Floriancic, M., Fu, X., Raymond, P., &amp; Kirchner, J.W. (2026).
+          Controls on the magnitude and timing of runoff response to rainfall across the continental US.
+          <i>Environmental Research Letters</i>, 21, 054017.
+          <a href="https://doi.org/10.1088/1748-9326/ae49a2" target="_blank" rel="noopener">DOI</a>
         </div>
+      </article>
 
-        <h2 class="research-title"><i class="fa-solid fa-book-open"></i> STREAM NETWORK TOPOLOGY</h2>
-        
+      <!-- 02 -->
+      <article class="research-card">
+        <div class="research-head">
+          <span class="research-num">02</span>
+          <h2 class="research-title">Stream Network Topology</h2>
+        </div>
         <div class="research-figure-wrap">
-          <img src="Topology.jpg" alt="topology" class="float-img">
-          <ul>
+          <img src="Topology.jpg" alt="Stream network topology">
+          <ul class="research-points">
             <li>We analyzed the topology and geometry of 16,322 stream networks from NHDPlus-HR across the contiguous United States.</li>
-            <li>73% of these networks are topologically self-similar, and that small tributaries join larger streams at systematically wider angles.</li>
-            <li>Correlations between climate and network topology are mainly mediated through the climate-dependence of networks’ geometric and topographic properties.</li>
+            <li>73% of these networks are topologically self-similar, and small tributaries join larger streams at systematically wider angles.</li>
+            <li>Correlations between climate and network topology are mainly mediated through the climate-dependence of networks' geometric and topographic properties.</li>
           </ul>
         </div>
-        
-        <div class="publication-caption">
-          <strong>Related publication:</strong><br>
-          Li, M., Seybold, H., Fu, X., Wu, B., Raymond, P., & Kirchner, J.W. (2026). Climate’s influence on topography encoded in stream network topology and geometry. <i>Nature Communications</i>, 17, 3426.
-          <a href="https://doi.org/10.1038/s41467-026-70200-0" target="_blank">DOI</a> 
+        <div class="pub-ref">
+          <strong>Related publication</strong>
+          Li, M., Seybold, H., Fu, X., Wu, B., Raymond, P., &amp; Kirchner, J.W. (2026).
+          Climate's influence on topography encoded in stream network topology and geometry.
+          <i>Nature Communications</i>, 17, 3426.
+          <a href="https://doi.org/10.1038/s41467-026-70200-0" target="_blank" rel="noopener">DOI</a>
         </div>
-        
-        <h2 class="research-title"><i class="fa-solid fa-book-open"></i> STREAM NETWORK BRANCHING GEOMETRY</h2>
-        
+      </article>
+
+      <!-- 03 -->
+      <article class="research-card">
+        <div class="research-head">
+          <span class="research-num">03</span>
+          <h2 class="research-title">Stream Network Branching Geometry</h2>
+        </div>
         <div class="research-figure-wrap">
-          <img src="TP.jpg" alt="Tibetan Plateau" class="float-img">
-          <ul>
+          <img src="TP.jpg" alt="Tibetan Plateau stream networks">
+          <ul class="research-points">
             <li>Branching angles of major stream networks on the eastern Tibetan Plateau vary systematically with climatic aridity and channel slopes.</li>
-            <li>Climatic controls dominate over tectonic drivers in shaping the branching angles in the flat interior of the eastern Tibetan Plateau.</li>
-            <li>Tectonic controls dominate over climate in shaping the branching angles in the steep margin of the eastern Tibetan Plateau.</li>
+            <li>Climatic controls dominate over tectonic drivers in shaping branching angles in the flat interior of the eastern Tibetan Plateau.</li>
+            <li>Tectonic controls dominate over climate in shaping branching angles in the steep margin of the eastern Tibetan Plateau.</li>
           </ul>
         </div>
-        
-        <div class="publication-caption">
-          <strong>Related publication:</strong><br>
-          Li, M., Seybold, H., Wu, B., Chen, Y., & Kirchner, J.W. (2023). Interaction between tectonics and climate encoded in the planform geometry of stream networks on the eastern Tibetan Plateau. <i>Geophysical Research Letters</i>, 50(14), e2023GL104121. 
-          <a href="https://doi.org/10.1029/2023GL104121" target="_blank">DOI</a>
+        <div class="pub-ref">
+          <strong>Related publication</strong>
+          Li, M., Seybold, H., Wu, B., Chen, Y., &amp; Kirchner, J.W. (2023).
+          Interaction between tectonics and climate encoded in the planform geometry of stream networks
+          on the eastern Tibetan Plateau. <i>Geophysical Research Letters</i>, 50(14), e2023GL104121.
+          <a href="https://doi.org/10.1029/2023GL104121" target="_blank" rel="noopener">DOI</a>
         </div>
-        
-        <h2 class="research-title"><i class="fa-solid fa-book-open"></i> DRAINAGE BASIN SHAPES</h2>
-        
+      </article>
+
+      <!-- 04 -->
+      <article class="research-card">
+        <div class="research-head">
+          <span class="research-num">04</span>
+          <h2 class="research-title">Drainage Basin Shapes</h2>
+        </div>
         <div class="research-figure-wrap">
-          <img src="BS.jpg" alt="basin" class="float-img-BS">
-          <ul>
+          <img src="BS.jpg" alt="Drainage basin shapes">
+          <ul class="research-points">
             <li>Globally, basins with greater topographic roughness tend to be wider, and those with steeper whole-basin slopes tend to be narrower.</li>
-            <li>In arid regions (aridity index <0.65), basins tend to widen as climate becomes more humid.</li>
+            <li>In arid regions (aridity index &lt; 0.65), basins tend to widen as climate becomes more humid.</li>
             <li>Basin shape is strongly correlated with topographic roughness, whole-basin slope and climatic aridity on a global scale.</li>
           </ul>
         </div>
-        
-        <div class="publication-caption">
-          <strong>Related publication:</strong><br>
-          Li, M., Seybold, H., Wu, B., Chen, Y., & Kirchner, J.W. (2024). Global analysis of topographic and climatic controls on drainage basin shapes. <i>Geophysical Research Letters</i>, 51(8), e2023GL105804. 
-          <a href="https://doi.org/10.1029/2023GL105804" target="_blank">DOI</a>
+        <div class="pub-ref">
+          <strong>Related publication</strong>
+          Li, M., Seybold, H., Wu, B., Chen, Y., &amp; Kirchner, J.W. (2024).
+          Global analysis of topographic and climatic controls on drainage basin shapes.
+          <i>Geophysical Research Letters</i>, 51(8), e2023GL105804.
+          <a href="https://doi.org/10.1029/2023GL105804" target="_blank" rel="noopener">DOI</a>
         </div>
+      </article>
 
-        <h2 class="research-title"><i class="fa-solid fa-book-open"></i> STREAM NETWORK CLASSIFICATION</h2>
-        
+      <!-- 05 -->
+      <article class="research-card">
+        <div class="research-head">
+          <span class="research-num">05</span>
+          <h2 class="research-title">Stream Network Classification</h2>
+        </div>
         <div class="research-figure-wrap">
-          <img src="tree.jpg" alt="tree" class="float-img-tree">
-          <ul>
+          <img src="tree.jpg" alt="Hierarchical stream network structure" class="narrow">
+          <ul class="research-points">
             <li>The patterns of river networks are closely related to landscape and terrain characteristics.</li>
             <li>A classification method based on the hierarchical structure of river networks improves accuracy by capturing drainage texture, flow direction, and aspect ratios.</li>
             <li>The proposed method outperforms previous methods, achieving cross-validation accuracies up to 82%, demonstrating the importance of hierarchical structures in river network classification.</li>
           </ul>
         </div>
-        
-        <div class="publication-caption">
-          <strong>Related publication:</strong><br>
-          Li, M., Wu, B., Chen, Y., & Li, D. (2022). Quantification of river network types based on hierarchical structures. <i>CATENA</i>, 211, 105986.
-          <a href="https://doi.org/10.1016/j.catena.2021.105986" target="_blank">DOI</a>
+        <div class="pub-ref">
+          <strong>Related publication</strong>
+          Li, M., Wu, B., Chen, Y., &amp; Li, D. (2022). Quantification of river network types based on
+          hierarchical structures. <i>CATENA</i>, 211, 105986.
+          <a href="https://doi.org/10.1016/j.catena.2021.105986" target="_blank" rel="noopener">DOI</a>
         </div>
-        
-        <h2 class="research-title"><i class="fa-solid fa-book-open"></i> HILLSLOPE-CHANNEL NETWORK CONNECTIVITY</h2>
-        <p><strong>UPDATING SOON</strong></p>
+      </article>
 
-         <h2 class="research-title"><i class="fa-solid fa-book-open"></i> STREAM NETWORK SURFACE AREA</h2>
-        <p><strong>UPDATING SOON</strong></p>
-      </div>
+      <!-- 06 -->
+      <article class="research-card">
+        <div class="research-head">
+          <span class="research-num">06</span>
+          <h2 class="research-title">Hillslope–Channel Network Connectivity</h2>
+          <span class="research-status">Updating soon</span>
+        </div>
+      </article>
 
-      <!-- Publications Section -->
-      <div id="publications" class="section">
-        <h3><i class="fa-solid fa-award" style="margin-right:6px;color:#FF0000;"></i>Peer-reviewed:</h3>
-        <ol class="publications">
-          <li><strong>Li, M.</strong>, Seybold, H., Fu, X., Wu, B., Raymond, P., & Kirchner, J.W. (2026). Climate’s influence on topography encoded in stream network topology and geometry. <i>Nature Communications</i>, 17, 3426. <a href="https://doi.org/10.1038/s41467-026-70200-0" target="_blank">DOI</a></li>
-          <li><strong>Li, M.</strong>, Seybold, H., Beria, H., Floriancic, M., Fu, X., Raymond, P., & Kirchner, J.W. (2026). Controls on the magnitude and timing of runoff response to rainfall across the continental US. <i>Environmental Research Letters</i>, 21, 054017. <a href="https://doi.org/10.1088/1748-9326/ae49a2" target="_blank">DOI</a></li>
-          <li><strong>Li, M.</strong>, Seybold, H., Wu, B., Chen, Y., Fu, X., & Kirchner, J.W. (2024). Global analysis of topographic and climatic controls on drainage basin shapes. <i>Geophysical Research Letters</i>, 51(8), e2023GL105804. <a href="https://doi.org/10.1029/2023GL105804" target="_blank">DOI</a></li>
-          <li><strong>Li, M.</strong>, Seybold, H., Wu, B., Chen, Y., & Kirchner, J.W. (2023). Interaction between tectonics and climate encoded in the planform geometry of stream networks on the eastern Tibetan Plateau. <i>Geophysical Research Letters</i>, 50(14), e2023GL104121. <a href="https://doi.org/10.1029/2023GL104121" target="_blank">DOI</a></li>
-          <li><strong>Li, M.</strong>, Wu, B., Chen, Y., & Li, D. (2022). Quantification of river network types based on hierarchical structures. <i>Catena</i>, 211, 105986. <a href="https://doi.org/10.1016/j.catena.2021.105986" target="_blank">DOI</a></li>
-          <li> Ciais, P., Zhu, Y., Cai, Y., Lan, X., Michel, S.E., Zheng, B., Zhao, Y., Hauglustaine, D.A., Lin, X., Zhang, Y., Sun, S., Tian, X., Zhao, M., Wang, Y., Chang, J., Dou, X., Liu, Z., Andrew, R., Quinn, C.A., Poulter, B., Ouyang, Z., Yuan, W., Yuan, K., Zhu, Q., Li, F., Pan, N., Tian, H., Yu, X., Rocher-Ros, G., Johnson, M.S., Li, M., <strong>Li, M.</strong>, Feng, D., Raymond, P., Yang, X., Canadell, J.G., Jackson, R.B., Yu, X., Li, Y., Saunois, M., Bousquet, P., Peng, S. (2026). Why methane surged in the atmosphere during the early 2020s. <i>Science</i>, 391(6785), eadx8262. <a href="https://www.science.org/doi/10.1126/science.adx8262" target="_blank">DOI</a></li>
-          <li>Chen, Y., Wu, B., Xiong, Z., Zan, J., Zhang, B., Zhang, R., Xue, Y., <strong>Li, M.</strong>, & Li, B. (2021). Evolution of eastern Tibetan river systems is driven by the indentation of India. <i>Communications Earth & Environment</i>, 2(1), 256. <a href="https://doi.org/10.1038/s43247-021-00330-4" target="_blank">DOI</a></li>
-          <li>Zhang, B., Wu, B., Zhang, R., Ren, S., & <strong>Li, M.</strong> (2021). 3D numerical modelling of asynchronous propagation characteristics of flood and sediment peaks in Three Gorges Reservoir. <i>Journal of Hydrology</i>, 593, 125896. <a href="https://doi.org/10.1016/j.jhydrol.2020.125896" target="_blank">DOI</a></li>
-          <li>Qin, C., Wu, B., Wang, Y., Fu, X., Xue, Y., Li, D., <strong>Li, M.</strong>, & Zhang, Y. (2020). Dynamic variability of at-a-station hydraulic-geometry for mountain rivers in the southeast Qinghai-Tibet Plateau: The cases of Yalong River and upper Jinsha River. <i>Catena</i>, 194, 104723. <a href="https://doi.org/10.1016/j.catena.2020.104723" target="_blank">DOI</a></li>
-        </ol>
-      </div>
-    </div>
-  </div>
+      <!-- 07 -->
+      <article class="research-card">
+        <div class="research-head">
+          <span class="research-num">07</span>
+          <h2 class="research-title">Stream Network Surface Area</h2>
+          <span class="research-status">Updating soon</span>
+        </div>
+      </article>
+    </section>
+
+    <!-- ---------- Publications ---------- -->
+    <section id="publications" class="section">
+      <h3 class="block-title">
+        <i class="fa-solid fa-award gold"></i> Peer-reviewed
+      </h3>
+
+      <ol class="pub-list">
+        <li class="pub-item">
+          <div class="pub-year">2026</div>
+          <div class="pub-body">
+            <p class="pub-title">Climate's influence on topography encoded in stream network topology and geometry</p>
+            <p class="pub-authors"><strong>Li, M.</strong>, Seybold, H., Fu, X., Wu, B., Raymond, P., &amp; Kirchner, J.W.</p>
+            <p class="pub-journal"><i>Nature Communications</i> · 17, 3426
+              <a class="doi" href="https://doi.org/10.1038/s41467-026-70200-0" target="_blank" rel="noopener">DOI ↗</a>
+            </p>
+          </div>
+        </li>
+
+        <li class="pub-item">
+          <div class="pub-year">2026</div>
+          <div class="pub-body">
+            <p class="pub-title">Controls on the magnitude and timing of runoff response to rainfall across the continental US</p>
+            <p class="pub-authors"><strong>Li, M.</strong>, Seybold, H., Beria, H., Floriancic, M., Fu, X., Raymond, P., &amp; Kirchner, J.W.</p>
+            <p class="pub-journal"><i>Environmental Research Letters</i> · 21, 054017
+              <a class="doi" href="https://doi.org/10.1088/1748-9326/ae49a2" target="_blank" rel="noopener">DOI ↗</a>
+            </p>
+          </div>
+        </li>
+
+        <li class="pub-item">
+          <div class="pub-year">2024</div>
+          <div class="pub-body">
+            <p class="pub-title">Global analysis of topographic and climatic controls on drainage basin shapes</p>
+            <p class="pub-authors"><strong>Li, M.</strong>, Seybold, H., Wu, B., Chen, Y., Fu, X., &amp; Kirchner, J.W.</p>
+            <p class="pub-journal"><i>Geophysical Research Letters</i> · 51(8), e2023GL105804
+              <a class="doi" href="https://doi.org/10.1029/2023GL105804" target="_blank" rel="noopener">DOI ↗</a>
+            </p>
+          </div>
+        </li>
+
+        <li class="pub-item">
+          <div class="pub-year">2023</div>
+          <div class="pub-body">
+            <p class="pub-title">Interaction between tectonics and climate encoded in the planform geometry of stream networks on the eastern Tibetan Plateau</p>
+            <p class="pub-authors"><strong>Li, M.</strong>, Seybold, H., Wu, B., Chen, Y., &amp; Kirchner, J.W.</p>
+            <p class="pub-journal"><i>Geophysical Research Letters</i> · 50(14), e2023GL104121
+              <a class="doi" href="https://doi.org/10.1029/2023GL104121" target="_blank" rel="noopener">DOI ↗</a>
+            </p>
+          </div>
+        </li>
+
+        <li class="pub-item">
+          <div class="pub-year">2022</div>
+          <div class="pub-body">
+            <p class="pub-title">Quantification of river network types based on hierarchical structures</p>
+            <p class="pub-authors"><strong>Li, M.</strong>, Wu, B., Chen, Y., &amp; Li, D.</p>
+            <p class="pub-journal"><i>Catena</i> · 211, 105986
+              <a class="doi" href="https://doi.org/10.1016/j.catena.2021.105986" target="_blank" rel="noopener">DOI ↗</a>
+            </p>
+          </div>
+        </li>
+
+        <li class="pub-item">
+          <div class="pub-year">2026</div>
+          <div class="pub-body">
+            <p class="pub-title">Why methane surged in the atmosphere during the early 2020s</p>
+            <p class="pub-authors">Ciais, P., Zhu, Y., Cai, Y., Lan, X., Michel, S.E., Zheng, B., Zhao, Y., Hauglustaine, D.A., Lin, X., Zhang, Y., Sun, S., Tian, X., Zhao, M., Wang, Y., Chang, J., Dou, X., Liu, Z., Andrew, R., Quinn, C.A., Poulter, B., Ouyang, Z., Yuan, W., Yuan, K., Zhu, Q., Li, F., Pan, N., Tian, H., Yu, X., Rocher-Ros, G., Johnson, M.S., Li, M., <strong>Li, M.</strong>, Feng, D., Raymond, P., Yang, X., Canadell, J.G., Jackson, R.B., Yu, X., Li, Y., Saunois, M., Bousquet, P., Peng, S.</p>
+            <p class="pub-journal"><i>Science</i> · 391(6785), eadx8262
+              <a class="doi" href="https://www.science.org/doi/10.1126/science.adx8262" target="_blank" rel="noopener">DOI ↗</a>
+            </p>
+          </div>
+        </li>
+
+        <li class="pub-item">
+          <div class="pub-year">2021</div>
+          <div class="pub-body">
+            <p class="pub-title">Evolution of eastern Tibetan river systems is driven by the indentation of India</p>
+            <p class="pub-authors">Chen, Y., Wu, B., Xiong, Z., Zan, J., Zhang, B., Zhang, R., Xue, Y., <strong>Li, M.</strong>, &amp; Li, B.</p>
+            <p class="pub-journal"><i>Communications Earth &amp; Environment</i> · 2(1), 256
+              <a class="doi" href="https://doi.org/10.1038/s43247-021-00330-4" target="_blank" rel="noopener">DOI ↗</a>
+            </p>
+          </div>
+        </li>
+
+        <li class="pub-item">
+          <div class="pub-year">2021</div>
+          <div class="pub-body">
+            <p class="pub-title">3D numerical modelling of asynchronous propagation characteristics of flood and sediment peaks in Three Gorges Reservoir</p>
+            <p class="pub-authors">Zhang, B., Wu, B., Zhang, R., Ren, S., &amp; <strong>Li, M.</strong></p>
+            <p class="pub-journal"><i>Journal of Hydrology</i> · 593, 125896
+              <a class="doi" href="https://doi.org/10.1016/j.jhydrol.2020.125896" target="_blank" rel="noopener">DOI ↗</a>
+            </p>
+          </div>
+        </li>
+
+        <li class="pub-item">
+          <div class="pub-year">2020</div>
+          <div class="pub-body">
+            <p class="pub-title">Dynamic variability of at-a-station hydraulic-geometry for mountain rivers in the southeast Qinghai-Tibet Plateau: The cases of Yalong River and upper Jinsha River</p>
+            <p class="pub-authors">Qin, C., Wu, B., Wang, Y., Fu, X., Xue, Y., Li, D., <strong>Li, M.</strong>, &amp; Zhang, Y.</p>
+            <p class="pub-journal"><i>Catena</i> · 194, 104723
+              <a class="doi" href="https://doi.org/10.1016/j.catena.2020.104723" target="_blank" rel="noopener">DOI ↗</a>
+            </p>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+  </main>
 
   <script>
-    document.querySelectorAll('.nav-link').forEach(link => {
-      link.addEventListener('click', function() {
-        document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
-        document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+    /* ---------- 导航切换 ---------- */
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('.section');
+
+    navLinks.forEach(link => {
+      link.addEventListener('click', function () {
+        navLinks.forEach(el => el.classList.remove('active'));
+        sections.forEach(el => el.classList.remove('active'));
+
         this.classList.add('active');
-        const sectionId = this.getAttribute('data-section');
-        document.getElementById(sectionId).classList.add('active');
-        
-        
-        window.scrollTo({
-          top: 0,
-          behavior: 'smooth'
-        });
+        const id = this.getAttribute('data-section');
+        const target = document.getElementById(id);
+        if (target) target.classList.add('active');
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       });
     });
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
